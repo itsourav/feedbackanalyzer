@@ -1,50 +1,39 @@
-CREATE TABLE IF NOT EXISTS public.atomicfeedback
-(
-    id integer NOT NULL DEFAULT nextval('atomicfeedback_id_seq'::regclass),
-    userfeedbackid integer,
-    feedback_type text COLLATE pg_catalog."default",
-    urgency integer,
-    severity integer,
-    impact integer,
-    feedback text COLLATE pg_catalog."default",
-    CONSTRAINT atomicfeedback_pkey PRIMARY KEY (id),
-    CONSTRAINT atomicfeedback_userfeedbackid_fkey FOREIGN KEY (userfeedbackid)
-        REFERENCES public.userfeedback (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-)
+CREATE TABLE IF NOT EXISTS UserFeedback (
+    id SERIAL PRIMARY KEY,
+    birthYear INTEGER,
+    nationality TEXT,
+    gender TEXT,
+    feedback TEXT
+);
 
-CREATE TABLE IF NOT EXISTS public.atomicfeedback_category
-(
-    atomicfeedbackid integer NOT NULL,
-    categoryid integer NOT NULL,
-    CONSTRAINT atomicfeedback_category_pkey PRIMARY KEY (atomicfeedbackid, categoryid),
-    CONSTRAINT atomicfeedback_category_atomicfeedbackid_fkey FOREIGN KEY (atomicfeedbackid)
-        REFERENCES public.atomicfeedback (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
-    CONSTRAINT atomicfeedback_category_categoryid_fkey FOREIGN KEY (categoryid)
-        REFERENCES public.category (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-)
+CREATE TABLE IF NOT EXISTS AtomicFeedback (
+    id SERIAL PRIMARY KEY ,
+    userFeedbackId INTEGER,
+    feedback_type TEXT,
+    urgency INTEGER,
+    severity INTEGER,
+    impact INTEGER,
+    feedback TEXT,
+    FOREIGN KEY (userFeedbackId) REFERENCES UserFeedback(id)
+);
 
-CREATE TABLE IF NOT EXISTS public.category
-(
-    id integer NOT NULL DEFAULT nextval('category_id_seq'::regclass),
-    name text COLLATE pg_catalog."default",
-    CONSTRAINT category_pkey PRIMARY KEY (id),
-    CONSTRAINT category_name_key UNIQUE (name)
-)
+
+CREATE TABLE IF NOT EXISTS Category (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS AtomicFeedback_Category (
+    atomicFeedbackId INTEGER,
+    categoryId INTEGER,
+    PRIMARY KEY (atomicFeedbackId, categoryId),
+    FOREIGN KEY (atomicFeedbackId) REFERENCES AtomicFeedback(id),
+    FOREIGN KEY (categoryId) REFERENCES Category(id)
+);
 
 
 
-CREATE TABLE IF NOT EXISTS public.userfeedback
-(
-    id integer NOT NULL DEFAULT nextval('userfeedback_id_seq'::regclass),
-    birthyear integer,
-    nationality text COLLATE pg_catalog."default",
-    gender text COLLATE pg_catalog."default",
-    feedback text COLLATE pg_catalog."default",
-    CONSTRAINT userfeedback_pkey PRIMARY KEY (id)
-)
+
+
+
+
